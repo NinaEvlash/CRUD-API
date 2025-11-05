@@ -1,0 +1,39 @@
+{
+  "name": "crud-api",
+  "version": "1.0.0",
+  "description": " Simple CRUD API",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --ext .ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NinaEvlash/CRUD-API.git"
+  },
+  "keywords": [],
+  "author": "Nina Evlash",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NinaEvlash/CRUD-API/issues"
+  },
+  "homepage": "https://github.com/NinaEvlash/CRUD-API#readme",
+  "dependencies": {
+    "cross-env": "^10.1.0",
+    "dotenv": "^17.2.3",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/node": "^24.10.0",
+    "@types/uuid": "^10.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.3",
+    "@typescript-eslint/parser": "^8.46.3",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "typescript-eslint": "^8.46.3"
+  }
+}
