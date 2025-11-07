@@ -26,6 +26,7 @@ export async function handleUsers(req: IncomingMessage, res: ServerResponse) {
       if (!user) {
         res.writeHead(404);
         res.end(JSON.stringify({ message: 'User not found!' }));
+        return;
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(user));
@@ -39,7 +40,7 @@ export async function handleUsers(req: IncomingMessage, res: ServerResponse) {
         const data = JSON.parse(body);
         const { username, age, hobbies } = data;
         if (!username || typeof age !== 'number' || !Array.isArray(hobbies)) {
-          res.writeHead(404);
+          res.writeHead(400);
           res.end(JSON.stringify({ message: 'Missing required fields!' }));
           return;
         }
