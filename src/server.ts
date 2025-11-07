@@ -1,19 +1,18 @@
 import http from 'http';
-import dotenv from 'dotenv';
+import { PORT as defaultPort } from './utils/config';
 import { handleUsers } from './controllers/usersController';
 
-dotenv.config();
-const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
+const PORT = Number(process.env.PORT) || defaultPort;
 
 const server = http.createServer((req, res) => {
   if (req.url?.startsWith('/api/users')) {
     handleUsers(req, res);
   } else {
-    res.writeHead(404);
+    res.writeHead(404, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ message: 'Endpoint not found!' }));
   }
 });
 
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}, PID: ${process.pid}`);
 });

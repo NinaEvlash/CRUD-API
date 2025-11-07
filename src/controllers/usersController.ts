@@ -5,8 +5,8 @@ import { User } from '../types/user';
 import { randomUUID } from 'crypto';
 
 export async function handleUsers(req: IncomingMessage, res: ServerResponse) {
-  const url = req.url?.split('/') || [];
-  const userId = url[3];
+  const urlParts = req.url?.split('/').filter(Boolean) || [];
+  const userId = urlParts[2];
 
   try {
     if (req.method === 'GET' && req.url === '/api/users') {
@@ -20,6 +20,7 @@ export async function handleUsers(req: IncomingMessage, res: ServerResponse) {
       if (!isValidUUID(userId)) {
         res.writeHead(400);
         res.end(JSON.stringify({ message: 'Invalid user ID!' }));
+        return;
       }
       const user = getUserById(userId);
       if (!user) {
@@ -40,6 +41,7 @@ export async function handleUsers(req: IncomingMessage, res: ServerResponse) {
         if (!username || typeof age !== 'number' || !Array.isArray(hobbies)) {
           res.writeHead(404);
           res.end(JSON.stringify({ message: 'Missing required fields!' }));
+          return;
         }
         const newUser: User = { id: randomUUID(), username, age, hobbies };
         createUser(newUser);
@@ -53,6 +55,7 @@ export async function handleUsers(req: IncomingMessage, res: ServerResponse) {
       if (!isValidUUID(userId)) {
         res.writeHead(400);
         res.end(JSON.stringify({ message: 'Invalid user ID!' }));
+        return;
       }
       let body = '';
       req.on('data', (chunk) => (body += chunk));
@@ -62,6 +65,7 @@ export async function handleUsers(req: IncomingMessage, res: ServerResponse) {
         if (!updated) {
           res.writeHead(404);
           res.end(JSON.stringify({ message: 'User not found!' }));
+          return;
         }
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(updated));
@@ -73,11 +77,13 @@ export async function handleUsers(req: IncomingMessage, res: ServerResponse) {
       if (!isValidUUID(userId)) {
         res.writeHead(400);
         res.end(JSON.stringify({ message: 'Invalid user ID!' }));
+        return;
       }
       const deleted = deleteUser(userId);
       if (!deleted) {
         res.writeHead(404);
         res.end(JSON.stringify({ message: 'User not found!' }));
+        return;
       }
       res.writeHead(204);
       res.end();
