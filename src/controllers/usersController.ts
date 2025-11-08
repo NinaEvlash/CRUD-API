@@ -1,4 +1,5 @@
 import { IncomingMessage, ServerResponse } from 'http';
+import { memoryDB } from '../db/memoryDb';
 import { getAllUsers, getUserById, createUser, updateUser, deleteUser } from '../mockDb/mockDb';
 import { isValidUUID } from '../utils/validateID';
 import { User } from '../types/user';
@@ -48,6 +49,7 @@ export async function handleUsers(req: IncomingMessage, res: ServerResponse) {
         createUser(newUser);
         res.writeHead(201, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(newUser));
+        process.send?.({ type: 'addUser', payload: newUser });
       });
       return;
     }
@@ -70,6 +72,7 @@ export async function handleUsers(req: IncomingMessage, res: ServerResponse) {
         }
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(updated));
+        process.send?.({ type: 'updateUser', payload: updated });
       });
       return;
     }
@@ -88,6 +91,7 @@ export async function handleUsers(req: IncomingMessage, res: ServerResponse) {
       }
       res.writeHead(204);
       res.end();
+      process.send?.({ type: 'deleteUser', payload: userId });
       return;
     }
 
@@ -99,3 +103,11 @@ export async function handleUsers(req: IncomingMessage, res: ServerResponse) {
     console.log(err);
   }
 }
+
+process.on('message', (message: any) => {
+  if (message?.type === 'sync' && Array.isArray(message.payload?.users)) {
+    const { users } = message.payload;
+    memoryDB.users.clear();
+    users.forEach((user: User) => memoryDB.users.set(user.id, user));
+  }
+});
